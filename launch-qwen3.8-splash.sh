@@ -18,6 +18,7 @@ Uso: $0 [options]
   -H, --host <host>    Host/IP on which the server binds to (default: $HOST)
   -e, --effort <s>     reasoning effort: low | medium | xhigh  (default: $REASONING_EFFORT)
   -u, --no-webui       disable the WEB ui server (default: enable)
+  -l, --language-only  disable the image processor (default: enable)
   -h, --help           show this help
 EOF
 }
