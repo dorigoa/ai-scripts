@@ -62,13 +62,3 @@ CMD=("splash"
 
 echo "Execute: ${CMD[*]}"
 exec "${CMD[@]}"
-
-#splash serve --port 8000 --host 0.0.0.0 \
-# --model mlx-community/Qwen3.8-27B-4bit \
-# --default-reasoning-effort medium \
-# --max-context 262144 \
-# --language-only \
-# --served-model-name Qwen8-27B-4bit \
-# --kv-format int8 \
-# --max-cache-disk 16G \
-# --max-memory 30G
