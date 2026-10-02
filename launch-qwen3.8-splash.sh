@@ -7,6 +7,7 @@ MAX_CONTEXT="262144"
 PORT="8000"
 HOST="0.0.0.0"
 NOWEBUI=""
+LANGONLY=""
 
 # ========================= Help =========================
 usage() {
@@ -24,12 +25,13 @@ EOF
 # ========================= Parse arguments =========================
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    -c|--max-ctx)   MAX_CONTEXT="$2"; shift 2 ;;
-    -p|--port)      PORT="$2"; shift 2 ;;
-    -H|--host)      HOST="$2"; shift 2 ;;     
-    -e|--effort)    REASONING_EFFORT="$2"; shift 2 ;;
-    -u|--no-webui)  NOWEBUI="--no-webui"; shift ;;
-    -h|--help)      usage; exit 0 ;;
+    -c|--max-ctx)       MAX_CONTEXT="$2"; shift 2 ;;
+    -p|--port)          PORT="$2"; shift 2 ;;
+    -H|--host)          HOST="$2"; shift 2 ;;     
+    -e|--effort)        REASONING_EFFORT="$2"; shift 2 ;;
+    -u|--no-webui)      NOWEBUI="--no-webui"; shift ;;
+    -l|--language-only) LANGONLY="--language-only"; shift 2 ;;
+    -h|--help)          usage; exit 0 ;;
     *) echo "Unknown option: $1" >&2; usage; exit 1 ;;
   esac
 done
@@ -49,7 +51,7 @@ CMD=("splash"
   --model mlx-community/Qwen3.8-27B-4bit
   --default-reasoning-effort $REASONING_EFFORT
   --max-context $MAX_CONTEXT
-  --language-only 
+  $LANGONLY 
   --served-model-name Qwen3.8-27B-4bit
   --kv-format int8
   --max-memory $(/usr/sbin/sysctl iogpu.wired_limit_mb|awk '{print sprintf("%.0f", $NF/1024)}')G
