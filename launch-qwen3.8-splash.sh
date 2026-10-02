@@ -52,7 +52,7 @@ CMD=("splash"
   --language-only 
   --served-model-name Qwen3.8-27B-4bit
   --kv-format int8
-  --max-memory $(/usr/sbin/sysctl iogpu.wired_limit_mb|awk '{print sprintf("%.0f", $NF/1024)}')
+  --max-memory $(/usr/sbin/sysctl iogpu.wired_limit_mb|awk '{print sprintf("%.0f", $NF/1024)}')G
   --max-cache-disk 16G # should be enough for most of the KVs
   $NOWEBUI
 )
