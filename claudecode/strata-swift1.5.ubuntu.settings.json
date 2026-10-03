@@ -1,0 +1,13 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://192.168.1.200:8000",
+    "ANTHROPIC_AUTH_TOKEN": "dummy",
+    "API_TIMEOUT_MS": "300000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "ANTHROPIC_MODEL": "swift-1.5-iq3_xxs",
+    "ANTHROPIC_SMALL_FAST_MODEL": "swift-1.5-iq3_xxs",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "swift-1.5-iq3_xxs",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "swift-1.5-iq3_xxs",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "swift-1.5-iq3_xxs"
+  }
+}
