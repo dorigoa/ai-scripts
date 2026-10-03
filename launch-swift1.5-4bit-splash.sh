@@ -42,18 +42,18 @@ done
 case "$REASONING_EFFORT" in low|medium|xhigh) ;; *) echo "--effort must be low|medium|xhigh" >&2; exit 1 ;; esac
 
 # ========================= DoIt =========================
-hf download ukisai/Swift-1.5-4bit-MLX
+hf download SiliconSpecies/Swift-1.5-Qwen3.8-27B-Splash
 #brew install -q incoai/tap/splash
 
 CMD=("splash"
   serve
   --port "$PORT"
   --host $HOST
-  --model ukisai/Swift-1.5-4bit-MLX
+  --model SiliconSpecies/Swift-1.5-Qwen3.8-27B-Splash
   --default-reasoning-effort $REASONING_EFFORT
   --max-context $MAX_CONTEXT
   $LANGONLY 
-  --served-model-name Swift-1.5-4bit-MLX
+  --served-model-name Swift-1.5-Qwen3.8-27B
   --kv-format int8
   --max-memory $(/usr/sbin/sysctl iogpu.wired_limit_mb|awk '{print sprintf("%.0f", $NF/1024)}')G
   --max-cache-disk 16G # should be enough for most of the KVs
