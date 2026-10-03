@@ -1,0 +1,13 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "http://192.168.1.191:8000",
+    "ANTHROPIC_AUTH_TOKEN": "dummy",
+    "API_TIMEOUT_MS": "300000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "ANTHROPIC_MODEL": "mlx-community/Qwen3.8-27B-4bit",
+    "ANTHROPIC_SMALL_FAST_MODEL": "mlx-community/Qwen3.8-27B-4bit",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "mlx-community/Qwen3.8-27B-4bit",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "mlx-community/Qwen3.8-27B-4bit",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "mlx-community/Qwen3.8-27B-4bit"
+  }
+}
