@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "deny": [
+      "Workflow",
+      "EnterWorktree",
+      "ExitWorktree",
+      "ScheduleWakeup",
+      "CronCreate",
+      "CronList",
+      "CronDelete",
+      "NotebookEdit",
+      "SendMessage",
+      "ReportFindings",
+      "TaskOutput",
+      "Skill",
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "TaskCreate",
+      "TaskUpdate",
+      "TaskGet",
+      "TaskList",
+      "TaskStop",
+      "AskUserQuestion"
+    ]
+  },
+  "modelSettings": {
+    "default_model": {
+      "effortLevel": "medium"
+    },
+    "mlx-community/qwen3.8-27b-4bit": {
+      "effortLevel": "xhigh"
+    },
+    "siliconspecies/swift-1.5-qwen3.8-27b-splash": {
+      "effortLevel": "xhigh"
+    },
+    "swift-1.5-iq3_xxs": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "tui": "fullscreen",
+  "theme": "auto"
+}
