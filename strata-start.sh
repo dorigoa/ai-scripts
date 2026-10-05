@@ -4,5 +4,6 @@ if [ -d Strata-fork/.git ]; then
 else
     git clone git@github.com:dorigoa/Strata-fork.git
 fi
+cd Strata-fork
 ./update.sh
 ./custom-start.sh
