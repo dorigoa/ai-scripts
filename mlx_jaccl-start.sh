@@ -1,21 +1,22 @@
 #!/usr/bin/env bash
 
 readonly MODELS=("Qwen3.8-27B" "GLM-4.7-Flash" "Qwen3.6-35B-A3B", "Llama-3.3-70B-Instruct")
-#readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR=~/mlx-apple
 HOSTFILE="${SCRIPT_DIR}/hosts.json"
 readonly PYTHON_BIN="${HOME}/miniforge3/envs/mlx/bin/python"
+SHIM="${HOME}/mlx-apple-doc/mlx_leak_shim.py"
 
 usage() {
     cat >&2 <<EOF
 Uso: $(basename "$0") <model> [-8bit] [-nothink] [-port <1-65535>] [-max-token <integer>] [-hostfile <file>]
-  <modello>        Mandatory: $(IFS='|'; echo "${MODELS[*]}")
-  -8bit            Optional: use 8bit quantization (default: 4bit)
-  -nothink         Optional: disable thinking (default enable)
-  -port <n>        Optional: listening port for API server(default: 8080)
-  -max-tokens <n>  Optional: max number of tokens to be generated (default: 8192)
-  -hostfile <file> Optional: path to hostfile containing the host defition for mlx cluster
-  -debug           Optional: show debug messages
+  <modello>          Mandatory: $(IFS='|'; echo "${MODELS[*]}")
+  -8bit              Optional: use 8bit quantization (default: 4bit)
+  -nothink           Optional: disable thinking (default enable)
+  -port <n>          Optional: listening port for API server(default: 8080)
+  -max-tokens <n>    Optional: max number of tokens to be generated (default: 8192)
+  -hostfile <file>   Optional: path to hostfile containing the host defition for mlx cluster
+  -leak-patch <file> Optional: change the patch path for memory leak with qwen models
+  -debug             Optional: show debug messages
   
   -h         Show this help
 EOF
@@ -52,6 +53,8 @@ while [[ $# -gt 0 ]]; do
             MAX_TOKENS="$((10#$2))"; shift 2 ;;
         -hostfile)
             HOSTFILE="$2"; shift 2 ;;
+        -leak-patch)
+            SHIM="$2"; shift 2 ;;
         -debug)
             LOG_LEVEL="DEBUG"; shift ;;
         -h|--help)
@@ -68,6 +71,7 @@ done
 [[ -n "$MNAME" ]]      || { echo "Error: missing model" >&2; usage; }
 [[ -f "$HOSTFILE" ]]   || die "hostfile not found: $HOSTFILE"
 [[ -x "$PYTHON_BIN" ]] || die "Python interpreter not found: $PYTHON_BIN"
+[[ -f "$SHIM" ]] || { echo "ERROR: $SHIM not found" >&2; exit 1; }
 
 MODEL="mlx-community/${MNAME}-${BIT_DEPTH}"
 (( THINK_MODE )) && THINK_BOOL=true || THINK_BOOL=false
@@ -79,8 +83,23 @@ command -v mlx.launch >/dev/null 2>&1 || die "mlx.launch not found in 'mlx' env"
 
 echo "Server start: model=$MODEL, port=$PORT, thinking=$THINK_BOOL" >&2
 
+# server_args=(
+#     -m mlx_lm.server
+#     --model "$MODEL"
+#     --host 0.0.0.0 --port "$PORT"
+#     --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0
+#     --max-tokens "$MAX_TOKENS"
+#     --log-level "$LOG_LEVEL"
+#     --chat-template-args "{\"enable_thinking\": ${THINK_BOOL}}"
+# )
+
+# exec mlx.launch --verbose --backend jaccl --hostfile "$HOSTFILE" \
+#     --env MLX_METAL_FAST_SYNCH=0 --env HF_HUB_OFFLINE=0 \
+#     -- "$PYTHON_BIN" "${server_args[@]}"
+
+
 server_args=(
-    -m mlx_lm.server
+    "$SHIM"
     --model "$MODEL"
     --host 0.0.0.0 --port "$PORT"
     --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0
@@ -91,4 +110,5 @@ server_args=(
 
 exec mlx.launch --verbose --backend jaccl --hostfile "$HOSTFILE" \
     --env MLX_METAL_FAST_SYNCH=0 --env HF_HUB_OFFLINE=0 \
+    --env MLX_LEAK_SHIM="${MLX_LEAK_SHIM:-1}" --env MLX_LEAK_SHIM_STRICT=1 \
     -- "$PYTHON_BIN" "${server_args[@]}"
