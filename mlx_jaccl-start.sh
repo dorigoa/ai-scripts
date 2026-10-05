@@ -51,7 +51,7 @@ while [[ $# -gt 0 ]]; do
         -max-tokens)
             MAX_TOKENS="$((10#$2))"; shift 2 ;;
         -hostfile)
-            HOSTFILE="$((10#$2))"; shift 2 ;;
+            HOSTFILE="$2"; shift 2 ;;
         -debug)
             LOG_LEVEL="DEBUG"; shift ;;
         -h|--help)
