@@ -3,7 +3,7 @@
 readonly MODELS=("Qwen3.8-27B" "GLM-4.7-Flash" "Qwen3.6-35B-A3B", "Llama-3.3-70B-Instruct")
 #readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR=~/mlx-apple
-readonly HOSTFILE="${SCRIPT_DIR}/hosts.json"
+HOSTFILE="${SCRIPT_DIR}/hosts.json"
 readonly PYTHON_BIN="${HOME}/miniforge3/envs/mlx/bin/python"
 
 usage() {
