@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 
 readonly MODELS=("Qwen3.8-27B" "GLM-4.7-Flash" "Qwen3.6-35B-A3B", "Llama-3.3-70B-Instruct")
-readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+#readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR=~/mlx-apple
 readonly HOSTFILE="${SCRIPT_DIR}/hosts.json"
 readonly PYTHON_BIN="${HOME}/miniforge3/envs/mlx/bin/python"
 
 usage() {
     cat >&2 <<EOF
-Uso: $(basename "$0") <model> [-8bit] [-nothink] [-port <1-65535>] [-max-token <integer>]
-  <modello>       Mandatory: $(IFS='|'; echo "${MODELS[*]}")
-  -8bit           Optional: use 8bit quantization (default: 4bit)
-  -nothink        Optional: disable thinking (default enable)
-  -port <n>       Optional: listening port for API server(default: 8080)
-  -max-tokens <n> Optional: max number of tokens to be generated (default: 8192)
-  -debug          Optional: show debug messages
+Uso: $(basename "$0") <model> [-8bit] [-nothink] [-port <1-65535>] [-max-token <integer>] [-hostfile <file>]
+  <modello>        Mandatory: $(IFS='|'; echo "${MODELS[*]}")
+  -8bit            Optional: use 8bit quantization (default: 4bit)
+  -nothink         Optional: disable thinking (default enable)
+  -port <n>        Optional: listening port for API server(default: 8080)
+  -max-tokens <n>  Optional: max number of tokens to be generated (default: 8192)
+  -hostfile <file> Optional: path to hostfile containing the host defition for mlx cluster
+  -debug           Optional: show debug messages
+  
   -h         Show this help
 EOF
     exit "${1:-1}"
@@ -47,6 +50,8 @@ while [[ $# -gt 0 ]]; do
             PORT="$((10#$2))"; shift 2 ;;
         -max-tokens)
             MAX_TOKENS="$((10#$2))"; shift 2 ;;
+        -hostfile)
+            HOSTFILE="$((10#$2))"; shift 2 ;;
         -debug)
             LOG_LEVEL="DEBUG"; shift ;;
         -h|--help)
