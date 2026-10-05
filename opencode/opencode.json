@@ -36,7 +36,7 @@
           "name": "Default Model"
         }
       }
-    },
+    }
   },
   
   "model": "mlx/mlx-community/Qwen3.8-27B-4bit"
