@@ -95,6 +95,7 @@ server_args=(
     --max-tokens "$MAX_TOKENS"
     --log-level "$LOG_LEVEL"
     --prompt-cache-bytes 9663676416
+    --prefill-step-size 256
     --chat-template-args "{\"enable_thinking\": ${THINK_BOOL}, \"reasoning_effort\": \"$REAS_DEPTH\"}"
 )
 
