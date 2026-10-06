@@ -11,7 +11,8 @@ usage() {
 Uso: $(basename "$0") <model> [-8bit] [-nothink] [-port <1-65535>] [-max-token <integer>] [-hostfile <file>]
   <modello>          Mandatory: $(IFS='|'; echo "${MODELS[*]}")
   -8bit              Optional: use 8bit quantization (default: 4bit)
-  -nothink           Optional: disable thinking (default enable)
+  -nothink           Optional: disable thinking (default: enable)
+  -xhigh             Optional: enable high reasoning effort (default: medium)
   -port <n>          Optional: listening port for API server(default: 8080)
   -max-tokens <n>    Optional: max number of tokens to be generated (default: 8192)
   -hostfile <file>   Optional: path to hostfile containing the host defition for mlx cluster
@@ -37,6 +38,7 @@ THINK_MODE=1
 PORT=8080
 MAX_TOKENS=8192
 LOG_LEVEL="INFO"
+REAS_DEPTH="medium"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -45,6 +47,8 @@ while [[ $# -gt 0 ]]; do
         -nothink)
             #[[ "${2:-}" =~ ^[01]$ ]] || die "-think requires 0 or 1"
             THINK_MODE=0; shift ;;
+        -xhigh)
+            REAS_DEPTH="xhigh"; shift ;;
         -port)
             [[ "${2:-}" =~ ^[0-9]{1,5}$ ]] && (( 10#$2 >= 1 && 10#$2 <= 65535 )) \
                 || die "-port requires an integer in the range 1024-65535"
@@ -83,21 +87,6 @@ command -v mlx.launch >/dev/null 2>&1 || die "mlx.launch not found in 'mlx' env"
 
 echo "Server start: model=$MODEL, port=$PORT, thinking=$THINK_BOOL" >&2
 
-# server_args=(
-#     -m mlx_lm.server
-#     --model "$MODEL"
-#     --host 0.0.0.0 --port "$PORT"
-#     --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0
-#     --max-tokens "$MAX_TOKENS"
-#     --log-level "$LOG_LEVEL"
-#     --chat-template-args "{\"enable_thinking\": ${THINK_BOOL}}"
-# )
-
-# exec mlx.launch --verbose --backend jaccl --hostfile "$HOSTFILE" \
-#     --env MLX_METAL_FAST_SYNCH=0 --env HF_HUB_OFFLINE=0 \
-#     -- "$PYTHON_BIN" "${server_args[@]}"
-
-
 server_args=(
     "$SHIM"
     --model "$MODEL"
@@ -105,7 +94,8 @@ server_args=(
     --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0
     --max-tokens "$MAX_TOKENS"
     --log-level "$LOG_LEVEL"
-    --chat-template-args "{\"enable_thinking\": ${THINK_BOOL}}"
+    --prompt-cache-bytes 9663676416
+    --chat-template-args "{\"enable_thinking\": ${THINK_BOOL}, \"reasoning_effort\": \"$REAS_DEPTH\"}"
 )
 
 exec mlx.launch --verbose --backend jaccl --hostfile "$HOSTFILE" \
