@@ -29,7 +29,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "Llama.cpp (Mac2 Mac+Linux, Metal+CUDA)",
       "options": {
-        "baseURL": "http://localhost:8088/v1"
+        "baseURL": "http://localhost:18088/v1"
       },
       "models": {
         "default_model": {
@@ -38,6 +38,9 @@
       }
     }
   },
-  
+  "permission": {
+    "task": "deny",
+    "skill": "deny",
+  },
   "model": "mlx/mlx-community/Qwen3.8-27B-4bit"
 }
